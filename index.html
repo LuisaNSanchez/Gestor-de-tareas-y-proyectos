@@ -1,0 +1,1200 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow | Gestor de tareas</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f4f3fa;
+    color: #27243e;
+}
+
+header {
+    background: #28243e;
+    color: white;
+    padding: 30px 6%;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+header p {
+    color: #ccc5e9;
+}
+
+nav {
+    background: white;
+    padding: 18px 6%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+nav a {
+    color: #7055bf;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px;
+}
+
+.estadisticas, .patrones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.tarjeta {
+    background: white;
+    border: 1px solid #e5e0ef;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.tarjeta h2 {
+    color: #7055bf;
+    font-size: 32px;
+    margin-bottom: 0;
+}
+
+.panel {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow: 0 3px 15px #00000008;
+}
+
+.formulario, .filtros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd8e8;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+}
+
+button {
+    background: #7055bf;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.secundario {
+    background: #ebe5fa;
+    color: #7055bf;
+}
+
+.eliminar {
+    background: #ffe3e3;
+    color: #b83232;
+}
+
+.tarea {
+    border: 1px solid #e5e0ef;
+    border-left: 5px solid #7055bf;
+    padding: 18px;
+    border-radius: 10px;
+    margin-top: 15px;
+    overflow-wrap: anywhere;
+}
+
+.tarea h3 {
+    margin-top: 0;
+}
+
+.etiqueta {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 4px;
+    border-radius: 20px;
+    background: #ebe5fa;
+    color: #7055bf;
+    font-size: 12px;
+}
+
+.Alta {
+    background: #ffe0e0;
+    color: #bd3030;
+}
+
+.Media {
+    background: #fff0cc;
+    color: #946600;
+}
+
+.Baja {
+    background: #ddf5e4;
+    color: #24733b;
+}
+
+.acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.barra {
+    height: 14px;
+    background: #e9e4f2;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progreso {
+    background: #7055bf;
+    width: 0%;
+    height: 100%;
+    transition: width 0.3s;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+}
+
+#mensaje {
+    color: #7055bf;
+}
+
+@media (max-width: 600px) {
+    main {
+        padding: 12px;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>✦ TaskFlow</h1>
+    <p>Organiza tu tiempo, tus tareas y tus objetivos.</p>
+</header>
+
+<nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#registro">Nueva actividad</a>
+    <a href="#actividades">Mis tareas</a>
+    <a href="#patrones">Patrones de diseño</a>
+</nav>
+
+<main>
+
+<section id="inicio">
+
+    <h2>Panel principal</h2>
+    <p>Gestiona tus actividades personales y proyectos.</p>
+
+    <div class="estadisticas">
+
+        <div class="tarjeta">
+            Total de actividades
+            <h2 id="total">0</h2>
+        </div>
+
+        <div class="tarjeta">
+            Pendientes
+            <h2 id="pendientes">0</h2>
+        </div>
+
+        <div class="tarjeta">
+            En curso o revisión
+            <h2 id="curso">0</h2>
+        </div>
+
+        <div class="tarjeta">
+            Terminadas
+            <h2 id="terminadas">0</h2>
+        </div>
+
+        <div class="tarjeta">
+            Atrasadas
+            <h2 id="atrasadas">0</h2>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="panel">
+
+    <h3>Progreso general</h3>
+
+    <p id="porcentaje">0% completado</p>
+
+    <div class="barra">
+        <div id="progreso"></div>
+    </div>
+
+</section>
+
+<section class="panel" id="registro">
+
+    <h2 id="tituloFormulario">Registrar actividad</h2>
+
+    <form id="formulario">
+
+        <div class="formulario">
+
+            <div>
+                <label>Nombre</label>
+                <input id="nombre"
+                placeholder="Nombre de la actividad" required>
+            </div>
+
+            <div>
+                <label>Fecha límite</label>
+                <input type="date" id="fecha" required>
+            </div>
+
+            <div>
+                <label>Prioridad</label>
+                <select id="prioridad">
+                    <option>Alta</option>
+                    <option selected>Media</option>
+                    <option>Baja</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Tipo de actividad</label>
+                <select id="tipo">
+                    <option value="simple">
+                        Tarea individual
+                    </option>
+                    <option value="compuesta">
+                        Proyecto con subtareas
+                    </option>
+                </select>
+            </div>
+
+            <div>
+                <label>Proyecto al que pertenece</label>
+                <select id="padre">
+                    <option value="">Ninguno</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Descripción</label>
+                <textarea id="descripcion"
+                placeholder="Describe la actividad"></textarea>
+            </div>
+
+        </div>
+
+        <br>
+
+        <button type="submit">Guardar actividad</button>
+
+        <button type="button" class="secundario"
+        id="cancelar">Limpiar</button>
+
+        <p id="mensaje"></p>
+
+    </form>
+
+</section>
+
+<section class="panel" id="actividades">
+
+    <h2>Mis actividades</h2>
+
+    <div class="filtros">
+
+        <input id="buscar"
+        placeholder="Buscar actividad...">
+
+        <select id="filtroEstado">
+            <option value="">Todos los estados</option>
+            <option>Pendiente</option>
+            <option>En curso</option>
+            <option>En revisión</option>
+            <option>Terminada</option>
+        </select>
+
+        <select id="filtroPrioridad">
+            <option value="">Todas las prioridades</option>
+            <option>Alta</option>
+            <option>Media</option>
+            <option>Baja</option>
+        </select>
+
+        <select id="orden">
+            <option value="fecha">Ordenar por fecha</option>
+            <option value="prioridad">Ordenar por prioridad</option>
+            <option value="nombre">Ordenar por nombre</option>
+        </select>
+
+    </div>
+
+    <div id="lista"></div>
+
+</section>
+
+<section class="panel" id="patrones">
+
+    <h2>Patrones de diseño</h2>
+
+    <div class="patrones">
+
+        <div class="tarjeta">
+            <h3>Composite</h3>
+            <small>Patrón estructural</small>
+            <p>
+                Permite organizar tareas individuales
+                y proyectos con subtareas.
+            </p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>State</h3>
+            <small>Patrón de comportamiento</small>
+            <p>
+                Controla los cambios de estado de
+                cada actividad.
+            </p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>Strategy</h3>
+            <small>Patrón de comportamiento</small>
+            <p>
+                Permite cambiar la forma de ordenar
+                las actividades.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+<footer>
+    TaskFlow | Ingeniería de Software II |
+    Universidad Libre
+</footer>
+
+<script>
+
+// ======================================
+// PATRON STATE
+// ======================================
+
+class Pendiente {
+    get nombre() {
+        return "Pendiente";
+    }
+
+    siguiente() {
+        return new EnCurso();
+    }
+}
+
+class EnCurso {
+    get nombre() {
+        return "En curso";
+    }
+
+    siguiente() {
+        return new EnRevision();
+    }
+}
+
+class EnRevision {
+    get nombre() {
+        return "En revisión";
+    }
+
+    siguiente() {
+        return new Terminada();
+    }
+}
+
+class Terminada {
+    get nombre() {
+        return "Terminada";
+    }
+
+    siguiente() {
+        return new Pendiente();
+    }
+}
+
+const estados = {
+    "Pendiente": Pendiente,
+    "En curso": EnCurso,
+    "En revisión": EnRevision,
+    "Terminada": Terminada
+};
+
+
+// ======================================
+// PATRON COMPOSITE
+// ======================================
+
+class Tarea {
+
+    constructor(datos) {
+
+        this.id = datos.id;
+        this.nombre = datos.nombre;
+        this.descripcion = datos.descripcion;
+        this.fecha = datos.fecha;
+        this.prioridad = datos.prioridad;
+
+        const Estado = estados[datos.estado] || Pendiente;
+
+        this.estado = new Estado();
+    }
+
+    cambiarEstado() {
+        this.estado = this.estado.siguiente();
+    }
+
+    obtenerActividades() {
+        return [this];
+    }
+
+    calcularProgreso() {
+        return this.estado.nombre === "Terminada"
+            ? 100 : 0;
+    }
+
+    toJSON() {
+
+        return {
+            id: this.id,
+            nombre: this.nombre,
+            descripcion: this.descripcion,
+            fecha: this.fecha,
+            prioridad: this.prioridad,
+            estado: this.estado.nombre,
+            tipo: "simple"
+        };
+    }
+}
+
+class TareaSimple extends Tarea {}
+
+class TareaCompuesta extends Tarea {
+
+    constructor(datos) {
+        super(datos);
+        this.subtareas = [];
+    }
+
+    agregar(tarea) {
+        this.subtareas.push(tarea);
+    }
+
+    obtenerActividades() {
+
+        return [
+            this,
+            ...this.subtareas.flatMap(
+                tarea => tarea.obtenerActividades()
+            )
+        ];
+    }
+
+    calcularProgreso() {
+
+        if (this.subtareas.length === 0) {
+            return super.calcularProgreso();
+        }
+
+        const suma = this.subtareas.reduce(
+            (total, tarea) =>
+                total + tarea.calcularProgreso(), 0
+        );
+
+        return Math.round(
+            suma / this.subtareas.length
+        );
+    }
+
+    toJSON() {
+
+        return {
+            ...super.toJSON(),
+            tipo: "compuesta",
+            subtareas: this.subtareas
+        };
+    }
+}
+
+
+// ======================================
+// PATRON STRATEGY
+// ======================================
+
+class OrdenPorFecha {
+
+    ordenar(tareas) {
+
+        return [...tareas].sort(
+            (a, b) => a.fecha.localeCompare(b.fecha)
+        );
+    }
+}
+
+class OrdenPorPrioridad {
+
+    ordenar(tareas) {
+
+        const niveles = {
+            Alta: 1,
+            Media: 2,
+            Baja: 3
+        };
+
+        return [...tareas].sort(
+            (a, b) =>
+                niveles[a.prioridad]
+                - niveles[b.prioridad]
+        );
+    }
+}
+
+class OrdenPorNombre {
+
+    ordenar(tareas) {
+
+        return [...tareas].sort(
+            (a, b) =>
+                a.nombre.localeCompare(b.nombre)
+        );
+    }
+}
+
+const estrategias = {
+    fecha: new OrdenPorFecha(),
+    prioridad: new OrdenPorPrioridad(),
+    nombre: new OrdenPorNombre()
+};
+
+
+// ======================================
+// GESTOR DE TAREAS
+// ======================================
+
+function recuperarTarea(datos) {
+
+    if (datos.tipo === "compuesta") {
+
+        const proyecto = new TareaCompuesta(datos);
+
+        (datos.subtareas || []).forEach(tarea => {
+            proyecto.agregar(recuperarTarea(tarea));
+        });
+
+        return proyecto;
+    }
+
+    return new TareaSimple(datos);
+}
+
+class GestorTareas {
+
+    constructor() {
+
+        this.tareas = [];
+        this.estrategia = estrategias.fecha;
+
+        try {
+
+            const datos = JSON.parse(
+                localStorage.getItem("taskflow") || "[]"
+            );
+
+            this.tareas = datos.map(recuperarTarea);
+
+        } catch (error) {
+
+            console.error(error);
+        }
+    }
+
+    agregar(tarea, padreId) {
+
+        const padre = this.buscar(padreId);
+
+        if (padre instanceof TareaCompuesta) {
+
+            padre.agregar(tarea);
+
+        } else {
+
+            this.tareas.push(tarea);
+        }
+    }
+
+    obtenerTodas() {
+
+        return this.tareas.flatMap(
+            tarea => tarea.obtenerActividades()
+        );
+    }
+
+    buscar(id) {
+
+        return this.obtenerTodas().find(
+            tarea => tarea.id === id
+        );
+    }
+
+    eliminar(id, lista = this.tareas) {
+
+        const posicion = lista.findIndex(
+            tarea => tarea.id === id
+        );
+
+        if (posicion !== -1) {
+
+            lista.splice(posicion, 1);
+            return true;
+        }
+
+        for (const tarea of lista) {
+
+            if (tarea instanceof TareaCompuesta) {
+
+                if (this.eliminar(id, tarea.subtareas)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    cambiarEstrategia(estrategia) {
+        this.estrategia = estrategia;
+    }
+
+    ordenar(lista) {
+        return this.estrategia.ordenar(lista);
+    }
+
+    guardar() {
+
+        localStorage.setItem(
+            "taskflow",
+            JSON.stringify(this.tareas)
+        );
+    }
+}
+
+const gestor = new GestorTareas();
+
+const elemento = id => document.getElementById(id);
+
+let editando = null;
+
+function escapar(texto) {
+
+    const div = document.createElement("div");
+
+    div.textContent = texto || "";
+
+    return div.innerHTML;
+}
+
+function fechaActual() {
+
+    const hoy = new Date();
+
+    const anio = hoy.getFullYear();
+
+    const mes = String(
+        hoy.getMonth() + 1
+    ).padStart(2, "0");
+
+    const dia = String(
+        hoy.getDate()
+    ).padStart(2, "0");
+
+    return `${anio}-${mes}-${dia}`;
+}
+
+function estaAtrasada(tarea) {
+
+    return tarea.fecha < fechaActual()
+        && tarea.estado.nombre !== "Terminada";
+}
+
+
+// ======================================
+// CREAR Y EDITAR TAREAS
+// ======================================
+
+elemento("formulario").addEventListener(
+    "submit", function(evento) {
+
+        evento.preventDefault();
+
+        const datos = {
+
+            id: editando || crypto.randomUUID(),
+
+            nombre: elemento("nombre").value.trim(),
+
+            descripcion:
+                elemento("descripcion").value.trim(),
+
+            fecha: elemento("fecha").value,
+
+            prioridad: elemento("prioridad").value,
+
+            estado: "Pendiente"
+        };
+
+        if (!datos.nombre || !datos.fecha) {
+
+            elemento("mensaje").textContent =
+                "Completa los campos obligatorios.";
+
+            return;
+        }
+
+        if (editando) {
+
+            const tarea = gestor.buscar(editando);
+
+            if (tarea) {
+
+                tarea.nombre = datos.nombre;
+                tarea.descripcion = datos.descripcion;
+                tarea.fecha = datos.fecha;
+                tarea.prioridad = datos.prioridad;
+            }
+
+        } else {
+
+            const tarea =
+                elemento("tipo").value === "compuesta"
+                ? new TareaCompuesta(datos)
+                : new TareaSimple(datos);
+
+            gestor.agregar(
+                tarea,
+                elemento("padre").value
+            );
+        }
+
+        const mensaje = editando
+            ? "Actividad actualizada correctamente."
+            : "Actividad creada correctamente.";
+
+        limpiarFormulario();
+
+        actualizar(mensaje);
+    }
+);
+
+function editarTarea(id) {
+
+    const tarea = gestor.buscar(id);
+
+    if (!tarea) return;
+
+    editando = id;
+
+    elemento("nombre").value = tarea.nombre;
+
+    elemento("descripcion").value = tarea.descripcion;
+
+    elemento("fecha").value = tarea.fecha;
+
+    elemento("prioridad").value = tarea.prioridad;
+
+    elemento("tipo").value =
+        tarea instanceof TareaCompuesta
+        ? "compuesta" : "simple";
+
+    elemento("tipo").disabled = true;
+
+    elemento("padre").disabled = true;
+
+    elemento("tituloFormulario").textContent =
+        "Editar actividad";
+
+    elemento("registro").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+function limpiarFormulario() {
+
+    editando = null;
+
+    elemento("formulario").reset();
+
+    elemento("tipo").disabled = false;
+
+    elemento("padre").disabled = false;
+
+    elemento("tituloFormulario").textContent =
+        "Registrar actividad";
+
+    elemento("mensaje").textContent = "";
+}
+
+elemento("cancelar").addEventListener(
+    "click", limpiarFormulario
+);
+
+
+// ======================================
+// ELIMINAR Y CAMBIAR ESTADO
+// ======================================
+
+function eliminarTarea(id) {
+
+    if (confirm(
+        "¿Deseas eliminar esta actividad y sus subtareas?"
+    )) {
+
+        gestor.eliminar(id);
+
+        limpiarFormulario();
+
+        actualizar("Actividad eliminada.");
+    }
+}
+
+function cambiarEstado(id) {
+
+    const tarea = gestor.buscar(id);
+
+    if (tarea) {
+
+        tarea.cambiarEstado();
+
+        actualizar();
+    }
+}
+
+
+// ======================================
+// MOSTRAR, BUSCAR Y FILTRAR
+// ======================================
+
+function mostrarTareas() {
+
+    const texto =
+        elemento("buscar").value.toLowerCase();
+
+    const estado =
+        elemento("filtroEstado").value;
+
+    const prioridad =
+        elemento("filtroPrioridad").value;
+
+    gestor.cambiarEstrategia(
+        estrategias[elemento("orden").value]
+    );
+
+    let html = "";
+
+    function recorrer(lista, nivel = 0) {
+
+        gestor.ordenar(lista).forEach(tarea => {
+
+            const coincide =
+
+                tarea.nombre.toLowerCase().includes(texto)
+
+                && (!estado ||
+                    tarea.estado.nombre === estado)
+
+                && (!prioridad ||
+                    tarea.prioridad === prioridad);
+
+            const proyecto =
+                tarea instanceof TareaCompuesta;
+
+            if (coincide) {
+
+                html += `
+
+                <div class="tarea"
+                style="margin-left:${Math.min(nivel, 4) * 15}px">
+
+                    <h3>
+                        ${proyecto ? "📁" : "📋"}
+                        ${escapar(tarea.nombre)}
+                    </h3>
+
+                    <p>
+                        ${escapar(tarea.descripcion)}
+                    </p>
+
+                    <span class="etiqueta ${tarea.prioridad}">
+                        ${tarea.prioridad}
+                    </span>
+
+                    <span class="etiqueta">
+                        ${tarea.estado.nombre}
+                    </span>
+
+                    <span class="etiqueta">
+                        ${escapar(tarea.fecha)}
+                    </span>
+
+                    ${estaAtrasada(tarea)
+                        ? '<span class="etiqueta Alta">Atrasada</span>'
+                        : ""}
+
+                    ${proyecto
+                        ? `<p>Avance del proyecto:
+                            ${tarea.calcularProgreso()}%</p>`
+                        : ""}
+
+                    <div class="acciones">
+
+                        <button data-accion="estado"
+                        data-id="${tarea.id}">
+
+                            ${tarea.estado.nombre === "Terminada"
+                                ? "Reabrir"
+                                : "Cambiar estado"}
+
+                        </button>
+
+                        <button class="secundario"
+                        data-accion="editar"
+                        data-id="${tarea.id}">
+
+                            Editar
+
+                        </button>
+
+                        <button class="eliminar"
+                        data-accion="eliminar"
+                        data-id="${tarea.id}">
+
+                            Eliminar
+
+                        </button>
+
+                    </div>
+
+                </div>`;
+            }
+
+            if (proyecto) {
+
+                recorrer(
+                    tarea.subtareas, nivel + 1
+                );
+            }
+
+        });
+    }
+
+    recorrer(gestor.tareas);
+
+    elemento("lista").innerHTML =
+        html || "<p>No hay actividades registradas.</p>";
+}
+
+elemento("lista").addEventListener(
+    "click", function(evento) {
+
+        const boton = evento.target.closest("button");
+
+        if (!boton) return;
+
+        const id = boton.dataset.id;
+
+        switch (boton.dataset.accion) {
+
+            case "estado":
+                cambiarEstado(id);
+                break;
+
+            case "editar":
+                editarTarea(id);
+                break;
+
+            case "eliminar":
+                eliminarTarea(id);
+                break;
+        }
+    }
+);
+
+
+// ======================================
+// ESTADISTICAS Y PROGRESO
+// ======================================
+
+function actualizarEstadisticas() {
+
+    const tareas = gestor.obtenerTodas();
+
+    const total = tareas.length;
+
+    const pendientes = tareas.filter(
+        t => t.estado.nombre === "Pendiente"
+    ).length;
+
+    const curso = tareas.filter(
+        t => t.estado.nombre === "En curso"
+        || t.estado.nombre === "En revisión"
+    ).length;
+
+    const terminadas = tareas.filter(
+        t => t.estado.nombre === "Terminada"
+    ).length;
+
+    const atrasadas =
+        tareas.filter(estaAtrasada).length;
+
+    const porcentaje = total === 0
+        ? 0
+        : Math.round(terminadas / total * 100);
+
+    elemento("total").textContent = total;
+
+    elemento("pendientes").textContent = pendientes;
+
+    elemento("curso").textContent = curso;
+
+    elemento("terminadas").textContent = terminadas;
+
+    elemento("atrasadas").textContent = atrasadas;
+
+    elemento("porcentaje").textContent =
+        porcentaje + "% completado";
+
+    elemento("progreso").style.width =
+        porcentaje + "%";
+}
+
+
+// ======================================
+// PROYECTOS DISPONIBLES
+// ======================================
+
+function actualizarProyectos() {
+
+    const selector = elemento("padre");
+
+    selector.innerHTML =
+        '<option value="">Ninguno</option>';
+
+    gestor.obtenerTodas().forEach(tarea => {
+
+        if (tarea instanceof TareaCompuesta) {
+
+            const opcion =
+                document.createElement("option");
+
+            opcion.value = tarea.id;
+
+            opcion.textContent = tarea.nombre;
+
+            selector.appendChild(opcion);
+        }
+    });
+}
+
+
+// ======================================
+// GUARDADO Y ACTUALIZACION
+// ======================================
+
+function actualizar(mensaje = "") {
+
+    try {
+
+        gestor.guardar();
+
+    } catch (error) {
+
+        mensaje = "No fue posible guardar los datos.";
+    }
+
+    mostrarTareas();
+
+    actualizarEstadisticas();
+
+    actualizarProyectos();
+
+    elemento("mensaje").textContent = mensaje;
+}
+
+elemento("buscar").addEventListener(
+    "input", mostrarTareas
+);
+
+elemento("filtroEstado").addEventListener(
+    "change", mostrarTareas
+);
+
+elemento("filtroPrioridad").addEventListener(
+    "change", mostrarTareas
+);
+
+elemento("orden").addEventListener(
+    "change", mostrarTareas
+);
+
+mostrarTareas();
+
+actualizarEstadisticas();
+
+actualizarProyectos();
+
+</script>
+
+</body>
+</html>
