@@ -1,513 +1,593 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaskFlow | Gestor de tareas</title>
+<title>TaskFlow</title>
 
 <style>
-
+:root {
+    --morado: #7055bf;
+    --oscuro: #28243e;
+    --claro: #eee9fa;
+    --fondo: #f5f4fa;
+    --borde: #e5e1ed;
+    --texto: #302b40;
+}
 * {
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
-
 body {
     margin: 0;
-    background: #f4f3fa;
-    color: #27243e;
+    background: var(--fondo);
+    color: var(--texto);
+}
+[hidden] {
+    display: none !important;
 }
 
-header {
-    background: #28243e;
+/* MENU LATERAL */
+.sidebar {
+    position: fixed;
+    width: 235px;
+    height: 100vh;
+    background: var(--oscuro);
     color: white;
-    padding: 30px 6%;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 32px;
-}
-
-header p {
-    color: #ccc5e9;
-}
-
-nav {
-    background: white;
-    padding: 18px 6%;
+    padding: 28px 18px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
+    flex-direction: column;
 }
-
-nav a {
-    color: #7055bf;
-    text-decoration: none;
+.logo {
+    font-size: 27px;
     font-weight: bold;
+    padding: 0 12px;
+    margin-bottom: 8px;
 }
-
-main {
-    max-width: 1200px;
-    margin: auto;
-    padding: 25px;
+.subtitulo {
+    font-size: 12px;
+    color: #bcb3d5;
+    padding: 0 12px;
 }
-
-.estadisticas, .patrones {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+.menu {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
-
-.tarjeta {
-    background: white;
-    border: 1px solid #e5e0ef;
-    border-radius: 15px;
-    padding: 20px;
-}
-
-.tarjeta h2 {
-    color: #7055bf;
-    font-size: 32px;
-    margin-bottom: 0;
-}
-
-.panel {
-    background: white;
-    border-radius: 15px;
-    padding: 25px;
-    margin-top: 25px;
-    box-shadow: 0 3px 15px #00000008;
-}
-
-.formulario, .filtros {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 7px;
+.menu a {
+    color: #d8d2e8;
+    text-decoration: none;
+    padding: 14px;
+    border-radius: 9px;
     font-size: 14px;
 }
-
+.menu a:hover {
+    background: #ffffff12;
+}
+.menu a.activo {
+    background: var(--morado);
+    color: white;
+}
+.sidebar footer {
+    margin-top: auto;
+    padding: 12px;
+    font-size: 12px;
+    color: #bcb3d5;
+}
+/* CONTENIDO PRINCIPAL */
+.contenido {
+    margin-left: 235px;
+    min-height: 100vh;
+}
+header {
+    background: white;
+    padding: 20px 35px;
+    border-bottom: 1px solid var(--borde);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+header span {
+    color: #777;
+    font-size: 13px;
+}
+main {
+    padding: 30px 35px;
+    max-width: 1400px;
+    margin: auto;
+}
+h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+h2 {
+    font-size: 19px;
+}
+p {
+    line-height: 1.5;
+}
+.descripcion {
+    color: #797487;
+    font-size: 14px;
+}
+.panel {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    border: 1px solid var(--borde);
+    margin-bottom: 22px;
+}
+.encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+/* ESTADISTICAS */
+.estadisticas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+.tarjeta {
+    background: white;
+    padding: 22px;
+    border: 1px solid var(--borde);
+    border-radius: 13px;
+}
+.tarjeta span {
+    font-size: 13px;
+    color: #797487;
+}
+.tarjeta strong {
+    display: block;
+    font-size: 32px;
+    color: var(--morado);
+    margin-top: 14px;
+}
+.barra {
+    background: var(--claro);
+    height: 12px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+#progreso {
+    background: var(--morado);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+}
+/* FORMULARIOS */
+.formulario {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+.completo {
+    grid-column: 1 / -1;
+}
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
 input, select, textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ddd8e8;
+    border: 1px solid #ddd8e7;
     border-radius: 8px;
     background: white;
+    color: var(--texto);
     font-size: 14px;
 }
-
+input:focus, select:focus, textarea:focus {
+    outline: 2px solid #b9a8e8;
+    border-color: var(--morado);
+}
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
 button {
-    background: #7055bf;
-    color: white;
     border: none;
+    background: var(--morado);
+    color: white;
+    padding: 11px 17px;
     border-radius: 8px;
-    padding: 11px 16px;
     cursor: pointer;
+    font-size: 13px;
     font-weight: bold;
 }
-
 button:hover {
     opacity: 0.85;
 }
-
 .secundario {
-    background: #ebe5fa;
-    color: #7055bf;
+    background: var(--claro);
+    color: var(--morado);
 }
-
 .eliminar {
-    background: #ffe3e3;
-    color: #b83232;
+    background: #fce5e5;
+    color: #b43d3d;
 }
-
-.tarea {
-    border: 1px solid #e5e0ef;
-    border-left: 5px solid #7055bf;
-    padding: 18px;
-    border-radius: 10px;
-    margin-top: 15px;
-    overflow-wrap: anywhere;
-}
-
-.tarea h3 {
-    margin-top: 0;
-}
-
-.etiqueta {
-    display: inline-block;
-    padding: 6px 12px;
-    margin: 4px;
-    border-radius: 20px;
-    background: #ebe5fa;
-    color: #7055bf;
-    font-size: 12px;
-}
-
-.Alta {
-    background: #ffe0e0;
-    color: #bd3030;
-}
-
-.Media {
-    background: #fff0cc;
-    color: #946600;
-}
-
-.Baja {
-    background: #ddf5e4;
-    color: #24733b;
-}
-
 .acciones {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 15px;
+    margin-top: 18px;
 }
-
-.barra {
-    height: 14px;
-    background: #e9e4f2;
+/* ACTIVIDADES */
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+.tarea {
+    border: 1px solid var(--borde);
+    border-left: 4px solid var(--morado);
     border-radius: 10px;
-    overflow: hidden;
+    padding: 18px;
+    margin-bottom: 14px;
+    background: white;
+    overflow-wrap: anywhere;
 }
-
-#progreso {
-    background: #7055bf;
-    width: 0%;
-    height: 100%;
-    transition: width 0.3s;
+.tarea h3 {
+    font-size: 17px;
+    margin: 0 0 8px;
 }
-
-footer {
-    text-align: center;
-    padding: 30px;
+.tarea p {
     color: #777;
+    font-size: 14px;
 }
-
+.etiqueta {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    margin: 3px;
+    background: var(--claro);
+    color: var(--morado);
+    font-size: 12px;
+}
+.Alta {
+    background: #ffe1e1;
+    color: #b52d2d;
+}
+.Media {
+    background: #fff0cc;
+    color: #946600;
+}
+.Baja {
+    background: #dff5e5;
+    color: #24723b;
+}
+.terminada {
+    background: #dff5e5;
+    color: #24723b;
+}
+.vacio {
+    text-align: center;
+    padding: 45px 15px;
+    color: #91899e;
+}
 #mensaje {
-    color: #7055bf;
+    color: var(--morado);
+    font-size: 14px;
+    margin-bottom: 20px;
 }
-
-@media (max-width: 600px) {
+.fila-resumen {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--borde);
+}
+.fila-resumen:last-child {
+    border-bottom: none;
+}
+/* ADAPTACION A CELULARES */
+@media (max-width: 800px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 18px;
+    }
+    .menu {
+        margin-top: 20px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .menu a {
+        padding: 10px;
+        font-size: 12px;
+    }
+    .sidebar footer {
+        display: none;
+    }
+    .contenido {
+        margin-left: 0;
+    }
+    header {
+        padding: 18px;
+    }
     main {
-        padding: 12px;
+        padding: 18px;
     }
-
+    .formulario {
+        grid-template-columns: 1fr;
+    }
     .panel {
-        padding: 15px;
+        padding: 18px;
     }
 }
-
 </style>
 </head>
-
 <body>
-
+<aside class="sidebar">
+    <div class="logo">✦ TaskFlow</div>
+    <div class="subtitulo">
+        Gestor de tareas y proyectos
+    </div>
+    <nav class="menu">
+        <a href="#inicio" class="activo">
+            ▦ &nbsp; Inicio
+        </a>
+        <a href="#registro">
+            ＋ &nbsp; Nueva actividad
+        </a>
+        <a href="#actividades">
+            ☷ &nbsp; Mis actividades
+        </a>
+        <a href="#proyectos">
+            ▣ &nbsp; Mis proyectos
+        </a>
+    </nav>
+    <footer>
+        Ingeniería de Software II<br>
+        Universidad Libre
+    </footer>
+</aside>
+<div class="contenido">
 <header>
-    <h1>✦ TaskFlow</h1>
-    <p>Organiza tu tiempo, tus tareas y tus objetivos.</p>
+    <strong id="ubicacion">Inicio</strong>
+    <span id="fechaHoy"></span>
 </header>
-
-<nav>
-    <a href="#inicio">Inicio</a>
-    <a href="#registro">Nueva actividad</a>
-    <a href="#actividades">Mis tareas</a>
-    <a href="#patrones">Patrones de diseño</a>
-</nav>
-
 <main>
-
+<p id="mensaje" aria-live="polite"></p>
+<!-- VISTA DE INICIO -->
 <section id="inicio">
-
-    <h2>Panel principal</h2>
-    <p>Gestiona tus actividades personales y proyectos.</p>
-
+    <div class="encabezado">
+        <div>
+            <h1>Panel principal</h1>
+            <p class="descripcion">
+                Resumen de tus actividades.
+            </p>
+        </div>
+        <button onclick="nuevaActividad()">
+            + Nueva actividad
+        </button>
+    </div>
     <div class="estadisticas">
-
         <div class="tarjeta">
-            Total de actividades
-            <h2 id="total">0</h2>
+            <span>Total de actividades</span>
+            <strong id="total">0</strong>
         </div>
-
         <div class="tarjeta">
-            Pendientes
-            <h2 id="pendientes">0</h2>
+            <span>Pendientes</span>
+            <strong id="pendientes">0</strong>
         </div>
-
         <div class="tarjeta">
-            En curso o revisión
-            <h2 id="curso">0</h2>
+            <span>En curso o revisión</span>
+            <strong id="curso">0</strong>
         </div>
-
         <div class="tarjeta">
-            Terminadas
-            <h2 id="terminadas">0</h2>
+            <span>Terminadas</span>
+            <strong id="terminadas">0</strong>
         </div>
-
         <div class="tarjeta">
-            Atrasadas
-            <h2 id="atrasadas">0</h2>
+            <span>Atrasadas</span>
+            <strong id="atrasadas">0</strong>
         </div>
-
     </div>
-
-</section>
-
-<section class="panel">
-
-    <h3>Progreso general</h3>
-
-    <p id="porcentaje">0% completado</p>
-
-    <div class="barra">
-        <div id="progreso"></div>
+    <div class="panel">
+        <h2>Progreso general</h2>
+        <p id="porcentaje">0% completado</p>
+        <div class="barra">
+            <div id="progreso"></div>
+        </div>
     </div>
-
-</section>
-
-<section class="panel" id="registro">
-
-    <h2 id="tituloFormulario">Registrar actividad</h2>
-
-    <form id="formulario">
-
-        <div class="formulario">
-
-            <div>
-                <label>Nombre</label>
-                <input id="nombre"
-                placeholder="Nombre de la actividad" required>
-            </div>
-
-            <div>
-                <label>Fecha límite</label>
-                <input type="date" id="fecha" required>
-            </div>
-
-            <div>
-                <label>Prioridad</label>
-                <select id="prioridad">
-                    <option>Alta</option>
-                    <option selected>Media</option>
-                    <option>Baja</option>
-                </select>
-            </div>
-
-            <div>
-                <label>Tipo de actividad</label>
-                <select id="tipo">
-                    <option value="simple">
-                        Tarea individual
-                    </option>
-                    <option value="compuesta">
-                        Proyecto con subtareas
-                    </option>
-                </select>
-            </div>
-
-            <div>
-                <label>Proyecto al que pertenece</label>
-                <select id="padre">
-                    <option value="">Ninguno</option>
-                </select>
-            </div>
-
-            <div>
-                <label>Descripción</label>
-                <textarea id="descripcion"
-                placeholder="Describe la actividad"></textarea>
-            </div>
-
+    <div class="panel">
+        <div class="encabezado">
+            <h2>Próximas actividades</h2>
+            <button class="secundario"
+                onclick="navegar('actividades')">
+                Ver todas
+            </button>
         </div>
-
-        <br>
-
-        <button type="submit">Guardar actividad</button>
-
-        <button type="button" class="secundario"
-        id="cancelar">Limpiar</button>
-
-        <p id="mensaje"></p>
-
-    </form>
-
-</section>
-
-<section class="panel" id="actividades">
-
-    <h2>Mis actividades</h2>
-
-    <div class="filtros">
-
-        <input id="buscar"
-        placeholder="Buscar actividad...">
-
-        <select id="filtroEstado">
-            <option value="">Todos los estados</option>
-            <option>Pendiente</option>
-            <option>En curso</option>
-            <option>En revisión</option>
-            <option>Terminada</option>
-        </select>
-
-        <select id="filtroPrioridad">
-            <option value="">Todas las prioridades</option>
-            <option>Alta</option>
-            <option>Media</option>
-            <option>Baja</option>
-        </select>
-
-        <select id="orden">
-            <option value="fecha">Ordenar por fecha</option>
-            <option value="prioridad">Ordenar por prioridad</option>
-            <option value="nombre">Ordenar por nombre</option>
-        </select>
-
+        <div id="proximas"></div>
     </div>
-
-    <div id="lista"></div>
-
 </section>
-
-<section class="panel" id="patrones">
-
-    <h2>Patrones de diseño</h2>
-
-    <div class="patrones">
-
-        <div class="tarjeta">
-            <h3>Composite</h3>
-            <small>Patrón estructural</small>
-            <p>
-                Permite organizar tareas individuales
-                y proyectos con subtareas.
-            </p>
-        </div>
-
-        <div class="tarjeta">
-            <h3>State</h3>
-            <small>Patrón de comportamiento</small>
-            <p>
-                Controla los cambios de estado de
-                cada actividad.
-            </p>
-        </div>
-
-        <div class="tarjeta">
-            <h3>Strategy</h3>
-            <small>Patrón de comportamiento</small>
-            <p>
-                Permite cambiar la forma de ordenar
-                las actividades.
-            </p>
-        </div>
-
+<!-- VISTA DE REGISTRO -->
+<section id="registro" hidden>
+    <h1 id="tituloFormulario">Nueva actividad</h1>
+    <p class="descripcion">
+        Completa la información de la actividad.
+    </p>
+    <div class="panel">
+        <form id="formulario">
+            <div class="formulario">
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input id="nombre"
+                        placeholder="Nombre de la actividad"
+                        required maxlength="120">
+                </div>
+                <div>
+                    <label for="fecha">Fecha límite</label>
+                    <input type="date" id="fecha" required>
+                </div>
+                <div>
+                    <label for="prioridad">Prioridad</label>
+                    <select id="prioridad">
+                        <option>Alta</option>
+                        <option selected>Media</option>
+                        <option>Baja</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tipo">Tipo de actividad</label>
+                    <select id="tipo">
+                        <option value="simple">
+                            Tarea individual
+                        </option>
+                        <option value="compuesta">
+                            Proyecto
+                        </option>
+                    </select>
+                </div>
+                <div class="completo">
+                    <label for="padre">
+                        Proyecto al que pertenece
+                    </label>
+                    <select id="padre">
+                        <option value="">Ninguno</option>
+                    </select>
+                </div>
+                <div class="completo">
+                    <label for="descripcion">
+                        Descripción
+                    </label>
+                    <textarea id="descripcion"
+                        placeholder="Descripción de la actividad">
+                    </textarea>
+                </div>
+            </div>
+            <div class="acciones">
+                <button type="submit" id="guardar">
+                    Guardar actividad
+                </button>
+                <button type="button" class="secundario"
+                    onclick="cancelarFormulario()">
+                    Cancelar
+                </button>
+            </div>
+        </form>
     </div>
-
 </section>
-
+<!-- VISTA DE ACTIVIDADES -->
+<section id="actividades" hidden>
+    <div class="encabezado">
+        <h1>Mis actividades</h1>
+        <button onclick="nuevaActividad()">
+            + Nueva actividad
+        </button>
+    </div>
+    <div class="panel">
+        <div class="filtros">
+            <input id="buscar"
+                placeholder="Buscar por nombre...">
+            <select id="filtroEstado">
+                <option value="">Todos los estados</option>
+                <option>Pendiente</option>
+                <option>En curso</option>
+                <option>En revisión</option>
+                <option>Terminada</option>
+            </select>
+            <select id="filtroPrioridad">
+                <option value="">Todas las prioridades</option>
+                <option>Alta</option>
+                <option>Media</option>
+                <option>Baja</option>
+            </select>
+            <select id="orden">
+                <option value="fecha">Ordenar por fecha</option>
+                <option value="prioridad">Ordenar por prioridad</option>
+                <option value="nombre">Ordenar por nombre</option>
+            </select>
+        </div>
+        <div id="lista"></div>
+    </div>
+</section>
+<!-- VISTA DE PROYECTOS -->
+<section id="proyectos" hidden>
+    <div class="encabezado">
+        <h1>Mis proyectos</h1>
+        <button onclick="nuevoProyecto()">
+            + Nuevo proyecto
+        </button>
+    </div>
+    <div id="listaProyectos"></div>
+</section>
 </main>
-
-<footer>
-    TaskFlow | Ingeniería de Software II |
-    Universidad Libre
-</footer>
-
+</div>
 <script>
-
-// ======================================
+// ==========================================
+// CAPA DE NEGOCIO
+// ==========================================
 // PATRON STATE
-// ======================================
-
 class Pendiente {
     get nombre() {
         return "Pendiente";
     }
-
     siguiente() {
         return new EnCurso();
     }
 }
-
 class EnCurso {
     get nombre() {
         return "En curso";
     }
-
     siguiente() {
         return new EnRevision();
     }
 }
-
 class EnRevision {
     get nombre() {
         return "En revisión";
     }
-
     siguiente() {
         return new Terminada();
     }
 }
-
 class Terminada {
     get nombre() {
         return "Terminada";
     }
-
     siguiente() {
         return new Pendiente();
     }
 }
-
 const estados = {
     "Pendiente": Pendiente,
     "En curso": EnCurso,
     "En revisión": EnRevision,
     "Terminada": Terminada
 };
-
-
-// ======================================
 // PATRON COMPOSITE
-// ======================================
-
 class Tarea {
-
     constructor(datos) {
-
         this.id = datos.id;
         this.nombre = datos.nombre;
         this.descripcion = datos.descripcion;
         this.fecha = datos.fecha;
         this.prioridad = datos.prioridad;
-
         const Estado = estados[datos.estado] || Pendiente;
-
         this.estado = new Estado();
     }
-
     cambiarEstado() {
         this.estado = this.estado.siguiente();
     }
-
     obtenerActividades() {
         return [this];
     }
-
     calcularProgreso() {
         return this.estado.nombre === "Terminada"
             ? 100 : 0;
     }
-
     toJSON() {
-
         return {
             id: this.id,
             nombre: this.nombre,
@@ -519,22 +599,16 @@ class Tarea {
         };
     }
 }
-
 class TareaSimple extends Tarea {}
-
 class TareaCompuesta extends Tarea {
-
     constructor(datos) {
         super(datos);
         this.subtareas = [];
     }
-
     agregar(tarea) {
         this.subtareas.push(tarea);
     }
-
     obtenerActividades() {
-
         return [
             this,
             ...this.subtareas.flatMap(
@@ -542,25 +616,19 @@ class TareaCompuesta extends Tarea {
             )
         ];
     }
-
     calcularProgreso() {
-
         if (this.subtareas.length === 0) {
             return super.calcularProgreso();
         }
-
         const suma = this.subtareas.reduce(
             (total, tarea) =>
                 total + tarea.calcularProgreso(), 0
         );
-
         return Math.round(
             suma / this.subtareas.length
         );
     }
-
     toJSON() {
-
         return {
             ...super.toJSON(),
             tipo: "compuesta",
@@ -568,12 +636,7 @@ class TareaCompuesta extends Tarea {
         };
     }
 }
-
-
-// ======================================
 // PATRON STRATEGY
-// ======================================
-
 class OrdenPorFecha {
 
     ordenar(tareas) {
@@ -614,15 +677,19 @@ class OrdenPorNombre {
 }
 
 const estrategias = {
+
     fecha: new OrdenPorFecha(),
+
     prioridad: new OrdenPorPrioridad(),
+
     nombre: new OrdenPorNombre()
+
 };
 
 
-// ======================================
-// GESTOR DE TAREAS
-// ======================================
+// ==========================================
+// CAPA DE DATOS
+// ==========================================
 
 function recuperarTarea(datos) {
 
@@ -631,7 +698,9 @@ function recuperarTarea(datos) {
         const proyecto = new TareaCompuesta(datos);
 
         (datos.subtareas || []).forEach(tarea => {
+
             proyecto.agregar(recuperarTarea(tarea));
+
         });
 
         return proyecto;
@@ -640,24 +709,67 @@ function recuperarTarea(datos) {
     return new TareaSimple(datos);
 }
 
+class RepositorioTareas {
+
+    cargar() {
+
+        const datos = JSON.parse(
+            localStorage.getItem("taskflow") || "[]"
+        );
+
+        return datos.map(recuperarTarea);
+    }
+
+    guardar(tareas) {
+
+        localStorage.setItem(
+            "taskflow",
+            JSON.stringify(tareas)
+        );
+    }
+}
+
+
+// ==========================================
+// SERVICIO DE GESTION
+// ==========================================
+
+function fechaActual() {
+
+    const hoy = new Date();
+
+    const anio = hoy.getFullYear();
+
+    const mes = String(
+        hoy.getMonth() + 1
+    ).padStart(2, "0");
+
+    const dia = String(
+        hoy.getDate()
+    ).padStart(2, "0");
+
+    return `${anio}-${mes}-${dia}`;
+}
+
 class GestorTareas {
 
-    constructor() {
+    constructor(repositorio) {
+
+        this.repositorio = repositorio;
 
         this.tareas = [];
+
         this.estrategia = estrategias.fecha;
+
+        this.errorCarga = false;
 
         try {
 
-            const datos = JSON.parse(
-                localStorage.getItem("taskflow") || "[]"
-            );
-
-            this.tareas = datos.map(recuperarTarea);
+            this.tareas = repositorio.cargar();
 
         } catch (error) {
 
-            console.error(error);
+            this.errorCarga = true;
         }
     }
 
@@ -682,6 +794,13 @@ class GestorTareas {
         );
     }
 
+    obtenerProyectos() {
+
+        return this.obtenerTodas().filter(
+            tarea => tarea instanceof TareaCompuesta
+        );
+    }
+
     buscar(id) {
 
         return this.obtenerTodas().find(
@@ -698,6 +817,7 @@ class GestorTareas {
         if (posicion !== -1) {
 
             lista.splice(posicion, 1);
+
             return true;
         }
 
@@ -706,6 +826,7 @@ class GestorTareas {
             if (tarea instanceof TareaCompuesta) {
 
                 if (this.eliminar(id, tarea.subtareas)) {
+
                     return true;
                 }
             }
@@ -715,67 +836,230 @@ class GestorTareas {
     }
 
     cambiarEstrategia(estrategia) {
+
         this.estrategia = estrategia;
     }
 
     ordenar(lista) {
+
         return this.estrategia.ordenar(lista);
+    }
+
+    estaAtrasada(tarea) {
+
+        return tarea.fecha < fechaActual()
+            && tarea.estado.nombre !== "Terminada";
+    }
+
+    estadisticas() {
+
+        const lista = this.obtenerTodas();
+
+        const total = lista.length;
+
+        const terminadas = lista.filter(
+            t => t.estado.nombre === "Terminada"
+        ).length;
+
+        return {
+
+            total,
+
+            terminadas,
+
+            pendientes: lista.filter(
+                t => t.estado.nombre === "Pendiente"
+            ).length,
+
+            curso: lista.filter(
+                t => t.estado.nombre === "En curso"
+                || t.estado.nombre === "En revisión"
+            ).length,
+
+            atrasadas: lista.filter(
+                t => this.estaAtrasada(t)
+            ).length,
+
+            progreso: total === 0
+                ? 0
+                : Math.round(terminadas / total * 100)
+        };
     }
 
     guardar() {
 
-        localStorage.setItem(
-            "taskflow",
-            JSON.stringify(this.tareas)
-        );
+        if (this.errorCarga) {
+
+            throw new Error("No se pudieron recuperar los datos anteriores.");
+        }
+
+        this.repositorio.guardar(this.tareas);
     }
 }
 
-const gestor = new GestorTareas();
+
+// ==========================================
+// CAPA DE PRESENTACION
+// ==========================================
+
+const gestor = new GestorTareas(
+    new RepositorioTareas()
+);
 
 const elemento = id => document.getElementById(id);
 
 let editando = null;
 
-function escapar(texto) {
+const secciones = {
+    inicio: "Inicio",
+    registro: "Nueva actividad",
+    actividades: "Mis actividades",
+    proyectos: "Mis proyectos"
+};
 
-    const div = document.createElement("div");
+function mostrarSeccion() {
 
-    div.textContent = texto || "";
+    let nombre = location.hash.substring(1);
 
-    return div.innerHTML;
+    if (!Object.keys(secciones).includes(nombre)) {
+
+        nombre = "inicio";
+    }
+
+    Object.keys(secciones).forEach(id => {
+
+        elemento(id).hidden = id !== nombre;
+
+    });
+
+    document.querySelectorAll(".menu a").forEach(enlace => {
+
+        const activo =
+            enlace.getAttribute("href") === "#" + nombre;
+
+        enlace.classList.toggle("activo", activo);
+
+        if (activo) {
+
+            enlace.setAttribute("aria-current", "page");
+
+        } else {
+
+            enlace.removeAttribute("aria-current");
+        }
+
+    });
+
+    elemento("ubicacion").textContent =
+        secciones[nombre];
+
+    window.scrollTo(0, 0);
 }
 
-function fechaActual() {
+function navegar(nombre) {
 
-    const hoy = new Date();
+    location.hash = nombre;
 
-    const anio = hoy.getFullYear();
-
-    const mes = String(
-        hoy.getMonth() + 1
-    ).padStart(2, "0");
-
-    const dia = String(
-        hoy.getDate()
-    ).padStart(2, "0");
-
-    return `${anio}-${mes}-${dia}`;
+    mostrarSeccion();
 }
 
-function estaAtrasada(tarea) {
+window.addEventListener(
+    "hashchange", mostrarSeccion
+);
 
-    return tarea.fecha < fechaActual()
-        && tarea.estado.nombre !== "Terminada";
+
+// FORMULARIOS
+
+function limpiarFormulario() {
+
+    editando = null;
+
+    elemento("formulario").reset();
+
+    elemento("tipo").disabled = false;
+
+    elemento("padre").disabled = false;
+
+    elemento("fecha").value = fechaActual();
+
+    elemento("tituloFormulario").textContent =
+        "Nueva actividad";
+
+    elemento("guardar").textContent =
+        "Guardar actividad";
 }
 
+function nuevaActividad() {
 
-// ======================================
-// CREAR Y EDITAR TAREAS
-// ======================================
+    limpiarFormulario();
+
+    actualizarProyectosDisponibles();
+
+    navegar("registro");
+}
+
+function nuevoProyecto() {
+
+    nuevaActividad();
+
+    elemento("tipo").value = "compuesta";
+
+    elemento("tituloFormulario").textContent =
+        "Nuevo proyecto";
+}
+
+function nuevaSubtarea(id) {
+
+    nuevaActividad();
+
+    elemento("padre").value = id;
+
+    elemento("tituloFormulario").textContent =
+        "Nueva subtarea";
+}
+
+function cancelarFormulario() {
+
+    limpiarFormulario();
+
+    navegar("actividades");
+}
+
+function editarTarea(id) {
+
+    const tarea = gestor.buscar(id);
+
+    if (!tarea) return;
+
+    editando = id;
+
+    elemento("nombre").value = tarea.nombre;
+
+    elemento("descripcion").value = tarea.descripcion;
+
+    elemento("fecha").value = tarea.fecha;
+
+    elemento("prioridad").value = tarea.prioridad;
+
+    elemento("tipo").value =
+        tarea instanceof TareaCompuesta
+            ? "compuesta" : "simple";
+
+    elemento("tipo").disabled = true;
+
+    elemento("padre").disabled = true;
+
+    elemento("tituloFormulario").textContent =
+        "Editar actividad";
+
+    elemento("guardar").textContent =
+        "Guardar cambios";
+
+    navegar("registro");
+}
 
 elemento("formulario").addEventListener(
-    "submit", function(evento) {
+    "submit", evento => {
 
         evento.preventDefault();
 
@@ -810,8 +1094,11 @@ elemento("formulario").addEventListener(
             if (tarea) {
 
                 tarea.nombre = datos.nombre;
+
                 tarea.descripcion = datos.descripcion;
+
                 tarea.fecha = datos.fecha;
+
                 tarea.prioridad = datos.prioridad;
             }
 
@@ -829,76 +1116,38 @@ elemento("formulario").addEventListener(
         }
 
         const mensaje = editando
-            ? "Actividad actualizada correctamente."
-            : "Actividad creada correctamente.";
+
+            ? "Actividad actualizada."
+
+            : "Actividad registrada.";
 
         limpiarFormulario();
 
         actualizar(mensaje);
+
+        navegar("actividades");
     }
 );
 
-function editarTarea(id) {
+
+// CAMBIO DE ESTADO Y ELIMINACION
+
+function cambiarEstado(id) {
 
     const tarea = gestor.buscar(id);
 
-    if (!tarea) return;
+    if (tarea) {
 
-    editando = id;
+        tarea.cambiarEstado();
 
-    elemento("nombre").value = tarea.nombre;
-
-    elemento("descripcion").value = tarea.descripcion;
-
-    elemento("fecha").value = tarea.fecha;
-
-    elemento("prioridad").value = tarea.prioridad;
-
-    elemento("tipo").value =
-        tarea instanceof TareaCompuesta
-        ? "compuesta" : "simple";
-
-    elemento("tipo").disabled = true;
-
-    elemento("padre").disabled = true;
-
-    elemento("tituloFormulario").textContent =
-        "Editar actividad";
-
-    elemento("registro").scrollIntoView({
-        behavior: "smooth"
-    });
+        actualizar("Estado actualizado.");
+    }
 }
-
-function limpiarFormulario() {
-
-    editando = null;
-
-    elemento("formulario").reset();
-
-    elemento("tipo").disabled = false;
-
-    elemento("padre").disabled = false;
-
-    elemento("tituloFormulario").textContent =
-        "Registrar actividad";
-
-    elemento("mensaje").textContent = "";
-}
-
-elemento("cancelar").addEventListener(
-    "click", limpiarFormulario
-);
-
-
-// ======================================
-// ELIMINAR Y CAMBIAR ESTADO
-// ======================================
 
 function eliminarTarea(id) {
 
     if (confirm(
-        "¿Deseas eliminar esta actividad y sus subtareas?"
+        "¿Eliminar esta actividad y sus subtareas?"
     )) {
 
         gestor.eliminar(id);
@@ -909,24 +1158,188 @@ function eliminarTarea(id) {
     }
 }
 
-function cambiarEstado(id) {
 
-    const tarea = gestor.buscar(id);
+// CREACION DE ELEMENTOS VISUALES
 
-    if (tarea) {
+function crearElemento(tipo, texto, clase) {
 
-        tarea.cambiarEstado();
+    const nuevo = document.createElement(tipo);
 
-        actualizar();
+    nuevo.textContent = texto || "";
+
+    if (clase) {
+
+        nuevo.className = clase;
     }
+
+    return nuevo;
+}
+
+function crearBoton(texto, accion, clase) {
+
+    const boton = crearElemento(
+        "button", texto, clase
+    );
+
+    boton.type = "button";
+
+    boton.addEventListener("click", accion);
+
+    return boton;
+}
+
+function crearTarjeta(tarea, nivel = 0) {
+
+    const tarjeta = crearElemento(
+        "article", "", "tarea"
+    );
+
+    tarjeta.style.marginLeft =
+        Math.min(nivel, 4) * 15 + "px";
+
+    const proyecto =
+        tarea instanceof TareaCompuesta;
+
+    tarjeta.appendChild(
+
+        crearElemento(
+            "h3",
+            (proyecto ? "▣ " : "☷ ") + tarea.nombre
+        )
+    );
+
+    if (tarea.descripcion) {
+
+        tarjeta.appendChild(
+            crearElemento("p", tarea.descripcion)
+        );
+    }
+
+    tarjeta.appendChild(
+
+        crearElemento(
+            "span",
+            tarea.prioridad,
+            "etiqueta " + tarea.prioridad
+        )
+    );
+
+    tarjeta.appendChild(
+
+        crearElemento(
+            "span",
+            tarea.estado.nombre,
+            tarea.estado.nombre === "Terminada"
+                ? "etiqueta terminada"
+                : "etiqueta"
+        )
+    );
+
+    tarjeta.appendChild(
+
+        crearElemento(
+            "span",
+            tarea.fecha,
+            "etiqueta"
+        )
+    );
+
+    if (gestor.estaAtrasada(tarea)) {
+
+        tarjeta.appendChild(
+            crearElemento(
+                "span", "Atrasada", "etiqueta Alta"
+            )
+        );
+    }
+
+    if (proyecto) {
+
+        tarjeta.appendChild(
+            crearElemento(
+                "p",
+                "Subtareas: " + tarea.subtareas.length
+                + " | Progreso: "
+                + tarea.calcularProgreso() + "%"
+            )
+        );
+
+        const barra = crearElemento(
+            "div", "", "barra"
+        );
+
+        const avance = crearElemento("div");
+
+        avance.style.background = "#7055bf";
+
+        avance.style.height = "100%";
+
+        avance.style.width =
+            tarea.calcularProgreso() + "%";
+
+        barra.appendChild(avance);
+
+        tarjeta.appendChild(barra);
+    }
+
+    const acciones = crearElemento(
+        "div", "", "acciones"
+    );
+
+    acciones.appendChild(
+
+        crearBoton(
+            tarea.estado.nombre === "Terminada"
+                ? "Reabrir"
+                : "Cambiar estado",
+
+            () => cambiarEstado(tarea.id)
+        )
+    );
+
+    if (proyecto) {
+
+        acciones.appendChild(
+
+            crearBoton(
+                "+ Subtarea",
+                () => nuevaSubtarea(tarea.id),
+                "secundario"
+            )
+        );
+    }
+
+    acciones.appendChild(
+
+        crearBoton(
+            "Editar",
+            () => editarTarea(tarea.id),
+            "secundario"
+        )
+    );
+
+    acciones.appendChild(
+
+        crearBoton(
+            "Eliminar",
+            () => eliminarTarea(tarea.id),
+            "eliminar"
+        )
+    );
+
+    tarjeta.appendChild(acciones);
+
+    return tarjeta;
 }
 
 
-// ======================================
-// MOSTRAR, BUSCAR Y FILTRAR
-// ======================================
+// MOSTRAR ACTIVIDADES
 
 function mostrarTareas() {
+
+    const lista = elemento("lista");
+
+    lista.replaceChildren();
 
     const texto =
         elemento("buscar").value.toLowerCase();
@@ -941,11 +1354,9 @@ function mostrarTareas() {
         estrategias[elemento("orden").value]
     );
 
-    let html = "";
+    function recorrer(tareas, nivel = 0) {
 
-    function recorrer(lista, nivel = 0) {
-
-        gestor.ordenar(lista).forEach(tarea => {
+        gestor.ordenar(tareas).forEach(tarea => {
 
             const coincide =
 
@@ -957,83 +1368,16 @@ function mostrarTareas() {
                 && (!prioridad ||
                     tarea.prioridad === prioridad);
 
-            const proyecto =
-                tarea instanceof TareaCompuesta;
-
             if (coincide) {
 
-                html += `
-
-                <div class="tarea"
-                style="margin-left:${Math.min(nivel, 4) * 15}px">
-
-                    <h3>
-                        ${proyecto ? "📁" : "📋"}
-                        ${escapar(tarea.nombre)}
-                    </h3>
-
-                    <p>
-                        ${escapar(tarea.descripcion)}
-                    </p>
-
-                    <span class="etiqueta ${tarea.prioridad}">
-                        ${tarea.prioridad}
-                    </span>
-
-                    <span class="etiqueta">
-                        ${tarea.estado.nombre}
-                    </span>
-
-                    <span class="etiqueta">
-                        ${escapar(tarea.fecha)}
-                    </span>
-
-                    ${estaAtrasada(tarea)
-                        ? '<span class="etiqueta Alta">Atrasada</span>'
-                        : ""}
-
-                    ${proyecto
-                        ? `<p>Avance del proyecto:
-                            ${tarea.calcularProgreso()}%</p>`
-                        : ""}
-
-                    <div class="acciones">
-
-                        <button data-accion="estado"
-                        data-id="${tarea.id}">
-
-                            ${tarea.estado.nombre === "Terminada"
-                                ? "Reabrir"
-                                : "Cambiar estado"}
-
-                        </button>
-
-                        <button class="secundario"
-                        data-accion="editar"
-                        data-id="${tarea.id}">
-
-                            Editar
-
-                        </button>
-
-                        <button class="eliminar"
-                        data-accion="eliminar"
-                        data-id="${tarea.id}">
-
-                            Eliminar
-
-                        </button>
-
-                    </div>
-
-                </div>`;
+                lista.appendChild(
+                    crearTarjeta(tarea, nivel)
+                );
             }
 
-            if (proyecto) {
+            if (tarea instanceof TareaCompuesta) {
 
-                recorrer(
-                    tarea.subtareas, nivel + 1
-                );
+                recorrer(tarea.subtareas, nivel + 1);
             }
 
         });
@@ -1041,116 +1385,195 @@ function mostrarTareas() {
 
     recorrer(gestor.tareas);
 
-    elemento("lista").innerHTML =
-        html || "<p>No hay actividades registradas.</p>";
-}
+    if (!lista.children.length) {
 
-elemento("lista").addEventListener(
-    "click", function(evento) {
-
-        const boton = evento.target.closest("button");
-
-        if (!boton) return;
-
-        const id = boton.dataset.id;
-
-        switch (boton.dataset.accion) {
-
-            case "estado":
-                cambiarEstado(id);
-                break;
-
-            case "editar":
-                editarTarea(id);
-                break;
-
-            case "eliminar":
-                eliminarTarea(id);
-                break;
-        }
+        lista.appendChild(
+            crearElemento(
+                "div",
+                "No hay actividades para mostrar.",
+                "vacio"
+            )
+        );
     }
-);
-
-
-// ======================================
-// ESTADISTICAS Y PROGRESO
-// ======================================
-
-function actualizarEstadisticas() {
-
-    const tareas = gestor.obtenerTodas();
-
-    const total = tareas.length;
-
-    const pendientes = tareas.filter(
-        t => t.estado.nombre === "Pendiente"
-    ).length;
-
-    const curso = tareas.filter(
-        t => t.estado.nombre === "En curso"
-        || t.estado.nombre === "En revisión"
-    ).length;
-
-    const terminadas = tareas.filter(
-        t => t.estado.nombre === "Terminada"
-    ).length;
-
-    const atrasadas =
-        tareas.filter(estaAtrasada).length;
-
-    const porcentaje = total === 0
-        ? 0
-        : Math.round(terminadas / total * 100);
-
-    elemento("total").textContent = total;
-
-    elemento("pendientes").textContent = pendientes;
-
-    elemento("curso").textContent = curso;
-
-    elemento("terminadas").textContent = terminadas;
-
-    elemento("atrasadas").textContent = atrasadas;
-
-    elemento("porcentaje").textContent =
-        porcentaje + "% completado";
-
-    elemento("progreso").style.width =
-        porcentaje + "%";
 }
 
 
-// ======================================
-// PROYECTOS DISPONIBLES
-// ======================================
+// MOSTRAR PROYECTOS
 
-function actualizarProyectos() {
+function mostrarProyectos() {
+
+    const lista = elemento("listaProyectos");
+
+    lista.replaceChildren();
+
+    const proyectos = gestor.obtenerProyectos();
+
+    proyectos.forEach(proyecto => {
+
+        const panel = crearElemento(
+            "div", "", "panel"
+        );
+
+        panel.appendChild(
+            crearTarjeta(proyecto)
+        );
+
+        panel.appendChild(
+            crearElemento("h2", "Subtareas")
+        );
+
+        proyecto.subtareas.forEach(tarea => {
+
+            panel.appendChild(
+                crearTarjeta(tarea, 1)
+            );
+        });
+
+        if (!proyecto.subtareas.length) {
+
+            panel.appendChild(
+                crearElemento(
+                    "p",
+                    "Este proyecto no tiene subtareas.",
+                    "descripcion"
+                )
+            );
+        }
+
+        lista.appendChild(panel);
+
+    });
+
+    if (!proyectos.length) {
+
+        lista.appendChild(
+            crearElemento(
+                "div",
+                "No tienes proyectos registrados.",
+                "panel vacio"
+            )
+        );
+    }
+}
+
+
+// SELECTOR DE PROYECTOS
+
+function actualizarProyectosDisponibles() {
 
     const selector = elemento("padre");
 
-    selector.innerHTML =
-        '<option value="">Ninguno</option>';
+    const seleccionado = selector.value;
 
-    gestor.obtenerTodas().forEach(tarea => {
+    selector.replaceChildren();
 
-        if (tarea instanceof TareaCompuesta) {
+    const ninguna = crearElemento(
+        "option", "Ninguno"
+    );
 
-            const opcion =
-                document.createElement("option");
+    ninguna.value = "";
 
-            opcion.value = tarea.id;
+    selector.appendChild(ninguna);
 
-            opcion.textContent = tarea.nombre;
+    gestor.obtenerProyectos().forEach(proyecto => {
 
-            selector.appendChild(opcion);
-        }
+        const opcion = crearElemento(
+            "option", proyecto.nombre
+        );
+
+        opcion.value = proyecto.id;
+
+        selector.appendChild(opcion);
+
     });
+
+    selector.value = seleccionado;
+
+    if (selector.selectedIndex === -1) {
+
+        selector.value = "";
+    }
+}
+
+// PANEL PRINCIPAL
+
+function actualizarEstadisticas() {
+
+    const datos = gestor.estadisticas();
+
+    elemento("total").textContent = datos.total;
+
+    elemento("pendientes").textContent =
+        datos.pendientes;
+
+    elemento("curso").textContent = datos.curso;
+
+    elemento("terminadas").textContent =
+        datos.terminadas;
+
+    elemento("atrasadas").textContent =
+        datos.atrasadas;
+
+    elemento("porcentaje").textContent =
+        datos.progreso + "% completado";
+
+    elemento("progreso").style.width =
+        datos.progreso + "%";
+}
+
+function mostrarProximas() {
+
+    const contenedor = elemento("proximas");
+
+    contenedor.replaceChildren();
+
+    const tareas = estrategias.fecha.ordenar(
+
+        gestor.obtenerTodas().filter(
+
+            tarea =>
+                tarea.estado.nombre !== "Terminada"
+
+                && tarea.fecha >= fechaActual()
+        )
+
+    ).slice(0, 5);
+
+    tareas.forEach(tarea => {
+
+        const fila = crearElemento(
+            "div", "", "fila-resumen"
+        );
+
+        fila.appendChild(
+            crearElemento("strong", tarea.nombre)
+        );
+
+        fila.appendChild(
+            crearElemento(
+                "p",
+                tarea.fecha + " | " + tarea.prioridad,
+                "descripcion"
+            )
+        );
+
+        contenedor.appendChild(fila);
+    });
+
+    if (!tareas.length) {
+
+        contenedor.appendChild(
+            crearElemento(
+                "div",
+                "No hay próximas actividades.",
+                "vacio"
+            )
+        );
+    }
 }
 
 
-// ======================================
-// GUARDADO Y ACTUALIZACION
-// ======================================
+// ACTUALIZACION Y GUARDADO
 
 function actualizar(mensaje = "") {
 
@@ -1160,17 +1583,25 @@ function actualizar(mensaje = "") {
 
     } catch (error) {
 
-        mensaje = "No fue posible guardar los datos.";
+        mensaje =
+            "No fue posible guardar los datos en el navegador.";
     }
 
     mostrarTareas();
 
+    mostrarProyectos();
+
     actualizarEstadisticas();
 
-    actualizarProyectos();
+    mostrarProximas();
+
+    actualizarProyectosDisponibles();
 
     elemento("mensaje").textContent = mensaje;
 }
+
+
+// EVENTOS
 
 elemento("buscar").addEventListener(
     "input", mostrarTareas
@@ -1188,11 +1619,34 @@ elemento("orden").addEventListener(
     "change", mostrarTareas
 );
 
+elemento("fechaHoy").textContent =
+    new Date().toLocaleDateString("es-CO", {
+
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+
+    });
+
+limpiarFormulario();
+
 mostrarTareas();
+
+mostrarProyectos();
 
 actualizarEstadisticas();
 
-actualizarProyectos();
+mostrarProximas();
+
+actualizarProyectosDisponibles();
+
+mostrarSeccion();
+
+if (gestor.errorCarga) {
+
+    elemento("mensaje").textContent =
+        "No se pudieron recuperar las actividades guardadas.";
+}
 
 </script>
 
